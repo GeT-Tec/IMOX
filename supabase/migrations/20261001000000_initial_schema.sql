@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS properties (
     city VARCHAR(100) NOT NULL,
     state VARCHAR(2) NOT NULL,
     zipcode VARCHAR(20),
-    location GEOGRAPHY(POINT, 4326) NOT NULL,
+    location GEOGRAPHY(POINT, 4326),
     price NUMERIC(15, 2) NOT NULL,
     condo_fee NUMERIC(10, 2),
     tax_fee NUMERIC(10, 2),
@@ -81,7 +81,6 @@ CREATE TABLE IF NOT EXISTS market_stats (
     inventory INTEGER NOT NULL,
     absorption_rate NUMERIC(5, 2) NOT NULL,
     trend VARCHAR(50) NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     CONSTRAINT uq_region_period UNIQUE (region_id, period)
 );
 
@@ -102,10 +101,10 @@ ALTER TABLE market_stats ENABLE ROW LEVEL SECURITY;
 
 -- Políticas de Leitura Pública (Apenas permissão SELECT para clientes via PostgREST)
 -- Isso garante que o frontend Next.js usando a `anon_key` possa apenas ler os dados.
-CREATE POLICY "Permitir leitura publica em brokers" ON brokers FOR SELECT USING (true);
-CREATE POLICY "Permitir leitura publica em properties" ON properties FOR SELECT USING (true);
-CREATE POLICY "Permitir leitura publica em price_history" ON price_history FOR SELECT USING (true);
-CREATE POLICY "Permitir leitura publica em market_stats" ON market_stats FOR SELECT USING (true);
+CREATE POLICY "public_read_brokers" ON brokers FOR SELECT TO anon USING (true);
+CREATE POLICY "public_read_properties" ON properties FOR SELECT TO anon USING (true);
+CREATE POLICY "public_read_price_history" ON price_history FOR SELECT TO anon USING (true);
+CREATE POLICY "public_read_market_stats" ON market_stats FOR SELECT TO anon USING (true);
 
 -- NOTA ARQUITETURAL: 
 -- O Crawler Node.js deverá autenticar utilizando a `service_role_key`. 
