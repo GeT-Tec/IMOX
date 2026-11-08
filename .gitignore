@@ -3,11 +3,21 @@ node_modules/
 .pnp
 .pnp.js
 
-# Production / Next.js
+# Production / Next.js & Nuxt 3
 .next/
+.nuxt/
+.output/
 out/
 build/
 dist/
+
+# Python / FastAPI
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
 
 # Environment files & Secrets (Strictly forbidden to commit credentials)
 .env
