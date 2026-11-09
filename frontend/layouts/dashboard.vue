@@ -1,17 +1,21 @@
 <script setup lang="ts">
 import {
   LayoutDashboard,
+  Globe,
+  ExternalLink,
+  Building,
+  Heart,
+  User,
   Building2,
   Sprout,
   Scale,
   Landmark,
-  LogOut,
   ShieldCheck,
-  Menu,
-  X,
-  ClipboardCheck,
   Users,
-  Globe
+  ClipboardCheck,
+  LogOut,
+  Menu,
+  X
 } from 'lucide-vue-next'
 
 const supabase = useSupabaseClient()
@@ -44,6 +48,21 @@ async function loadUserProfile() {
   userProfile.value = data || null
 }
 
+function formatRoleBadge(role?: string) {
+  switch (role) {
+    case 'broker':
+      return 'Corretor'
+    case 'b2b_partner':
+      return 'Parceiro B2B'
+    case 'customer':
+      return 'Investidor'
+    case 'admin':
+      return 'Admin'
+    default:
+      return role || 'Membro'
+  }
+}
+
 watch(
   () => user.value?.id,
   () => {
@@ -56,73 +75,109 @@ onMounted(() => {
   loadUserProfile()
 })
 
-const navigationItems = [
+const menuGroups = [
   {
-    id: 'overview',
-    label: '1. Visão Geral (Dashboard)',
-    to: '/dashboard',
-    icon: LayoutDashboard,
-    badge: 'Ativo'
+    id: 'principal',
+    title: 'Principal',
+    items: [
+      {
+        id: 'overview',
+        label: 'Visão Geral',
+        to: '/dashboard',
+        icon: LayoutDashboard
+      },
+      {
+        id: 'vitrine',
+        label: 'Vitrine Pública',
+        to: '/',
+        icon: Globe,
+        isExternal: true
+      }
+    ]
   },
   {
-    id: 'urban',
-    label: '2. Ativos Imobiliários (Urbano)',
-    to: '/dashboard?vertical=urbano',
-    icon: Building2,
-    badge: 'Morar / Urbano'
+    id: 'meu-painel',
+    title: 'Meu Painel',
+    items: [
+      {
+        id: 'meus-anuncios',
+        label: 'Meus Anúncios',
+        to: '/dashboard/meus-anuncios',
+        icon: Building
+      },
+      {
+        id: 'favoritos',
+        label: 'Favoritos',
+        to: '/dashboard/favoritos',
+        icon: Heart
+      },
+      {
+        id: 'perfil',
+        label: 'Meu Perfil',
+        to: '/dashboard/perfil',
+        icon: User
+      }
+    ]
   },
   {
-    id: 'agro',
-    label: '3. Ativos Rurais & ESG (Agro)',
-    to: '/dashboard?vertical=agro',
-    icon: Sprout,
-    badge: 'CAR / ESG'
-  },
-  {
-    id: 'cartorio',
-    label: '4. Serviços de Cartório & Jurídico',
-    to: '/dashboard?vertical=cartorio',
-    icon: Scale,
-    badge: 'RGI / Compliance'
-  },
-  {
-    id: 'funding',
-    label: '5. Viabilidade & Financiamento',
-    to: '/dashboard?vertical=financiamento',
-    icon: Landmark,
-    badge: 'LIT Capital'
+    id: 'servicos',
+    title: 'Serviços LIT Capital',
+    items: [
+      {
+        id: 'urbanos',
+        label: 'Ativos Urbanos',
+        to: '/dashboard/urbanos',
+        icon: Building2
+      },
+      {
+        id: 'rurais',
+        label: 'Ativos Rurais (Agro)',
+        to: '/dashboard/rurais',
+        icon: Sprout
+      },
+      {
+        id: 'juridico',
+        label: 'Cartório & Jurídico',
+        to: '/dashboard/juridico',
+        icon: Scale
+      },
+      {
+        id: 'credito',
+        label: 'Crédito & Funding',
+        to: '/dashboard/credito',
+        icon: Landmark
+      }
+    ]
   }
 ]
 
 const adminNavigationItems = [
   {
     id: 'admin-dashboard',
-    label: 'Admin Master Dashboard',
+    label: 'Dashboard Master',
     to: '/admin/dashboard',
-    icon: ShieldCheck,
-    badge: 'Master'
+    icon: ShieldCheck
   },
   {
     id: 'admin-users',
-    label: 'Gestão de Usuários',
+    label: 'Gestão de Acessos',
     to: '/admin/usuarios',
-    icon: Users,
-    badge: 'RBAC'
+    icon: Users
   },
   {
     id: 'admin-moderation',
-    label: 'Moderação de Anúncios',
+    label: 'Moderação de Ativos',
     to: '/admin/moderacao-anuncios',
-    icon: ClipboardCheck,
-    badge: 'Compliance'
+    icon: ClipboardCheck
   }
 ]
 
 function isItemActive(itemTo: string) {
+  if (itemTo === '/') return false
   if (itemTo === '/dashboard') {
-    return route.path === '/dashboard' && !route.query.vertical
+    return route.path === '/dashboard'
   }
-  return route.fullPath === itemTo || route.path === itemTo
+  return route.path === itemTo || route.path.startsWith(itemTo + '/')
 }
 
 async function handleSignOut() {
@@ -165,84 +220,69 @@ async function handleSignOut() {
           </button>
         </div>
 
-        <!-- Atalho Vitrine Pública -->
-        <div class="px-4 pt-4">
-          <NuxtLink
-            to="/"
-            class="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-semibold text-slate-200 transition"
+        <!-- Blocos de Navegação Estruturados -->
+        <div class="p-4 space-y-6">
+          <div
+            v-for="group in menuGroups"
+            :key="group.id"
+            class="space-y-1"
           >
-            <span class="inline-flex items-center gap-2">
-              <Globe class="w-4 h-4 text-[#F28C28]" />
-              Vitrine Pública Marketplace (`/`)
-            </span>
-            <span class="text-[10px] text-[#F28C28]">Pública</span>
-          </NuxtLink>
-        </div>
+            <p class="px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-slate-400/80">
+              {{ group.title }}
+            </p>
 
-        <!-- Menu de Verticais Multi-Serviços -->
-        <div class="p-4 space-y-1.5">
-          <p class="px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-slate-400">
-            Verticais de Serviços
-          </p>
-
-          <NuxtLink
-            v-for="item in navigationItems"
-            :key="item.id"
-            :to="item.to"
-            @click="mobileSidebarOpen = false"
-            :class="[
-              'group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all',
-              isItemActive(item.to)
-                ? 'bg-[#D96826] text-white shadow-md shadow-[#D96826]/20'
-                : 'text-slate-300 hover:bg-white/[0.06] hover:text-white'
-            ]"
-          >
-            <div class="flex items-center gap-3 min-w-0">
-              <component
-                :is="item.icon"
-                :class="[
-                  'w-4 h-4 shrink-0 transition-colors',
-                  isItemActive(item.to) ? 'text-white' : 'text-[#F28C28] group-hover:text-white'
-                ]"
-              />
-              <span class="truncate">{{ item.label }}</span>
-            </div>
-
-            <span
+            <NuxtLink
+              v-for="item in group.items"
+              :key="item.id"
+              :to="item.to"
+              @click="mobileSidebarOpen = false"
               :class="[
-                'ml-2 text-[10px] px-2 py-0.5 rounded-full font-semibold shrink-0',
+                'group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all',
                 isItemActive(item.to)
-                  ? 'bg-black/20 text-white'
-                  : 'bg-white/[0.06] text-slate-300'
+                  ? 'bg-[#D96826] text-white shadow-md shadow-[#D96826]/20 font-semibold'
+                  : 'text-slate-300 hover:bg-white/[0.06] hover:text-white'
               ]"
             >
-              {{ item.badge }}
-            </span>
-          </NuxtLink>
-        </div>
+              <div class="flex items-center gap-3 min-w-0">
+                <component
+                  :is="item.icon"
+                  :class="[
+                    'w-4 h-4 shrink-0 transition-colors',
+                    isItemActive(item.to) ? 'text-white' : 'text-[#F28C28] group-hover:text-white'
+                  ]"
+                />
+                <span class="truncate">{{ item.label }}</span>
+              </div>
 
-        <!-- Governança Master Admin (Visível EXCLUSIVAMENTE para userProfile?.role === 'admin') -->
-        <div
-          v-if="userProfile?.role === 'admin'"
-          class="px-4 pb-4 space-y-1.5 border-t border-white/10 pt-3"
-        >
-          <p class="px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-[#F28C28]">
-            Governança Master (Admin)
-          </p>
+              <!-- Indicador de Link Externo para Vitrine -->
+              <ExternalLink
+                v-if="item.isExternal"
+                class="w-3.5 h-3.5 text-slate-400 group-hover:text-white shrink-0 ml-2 opacity-70"
+              />
+            </NuxtLink>
+          </div>
 
-          <NuxtLink
-            v-for="adm in adminNavigationItems"
-            :key="adm.id"
-            :to="adm.to"
-            @click="mobileSidebarOpen = false"
-            :class="[
-              'group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all',
-              isItemActive(adm.to)
-                ? 'bg-[#D96826] text-white shadow-md shadow-[#D96826]/20'
-                : 'text-slate-300 hover:bg-white/[0.06] hover:text-white'
-            ]"
+          <!-- Seção Governança Master (Isolada para Admin) -->
+          <div
+            v-if="userProfile?.role === 'admin'"
+            class="space-y-1 border-t border-white/10 pt-4"
           >
-            <div class="flex items-center gap-3 min-w-0">
+            <p class="px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-[#F28C28]">
+              Governança Master
+            </p>
+
+            <NuxtLink
+              v-for="adm in adminNavigationItems"
+              :key="adm.id"
+              :to="adm.to"
+              @click="mobileSidebarOpen = false"
+              :class="[
+                'group flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all',
+                isItemActive(adm.to)
+                  ? 'bg-[#D96826] text-white shadow-md shadow-[#D96826]/20 font-semibold'
+                  : 'text-slate-300 hover:bg-white/[0.06] hover:text-white'
+              ]"
+            >
               <component
                 :is="adm.icon"
                 :class="[
@@ -251,38 +291,37 @@ async function handleSignOut() {
                 ]"
               />
               <span class="truncate">{{ adm.label }}</span>
-            </div>
-
-            <span class="ml-2 text-[10px] px-2 py-0.5 rounded-full font-semibold bg-white/[0.08] text-slate-200">
-              {{ adm.badge }}
-            </span>
-          </NuxtLink>
+            </NuxtLink>
+          </div>
         </div>
       </div>
 
       <!-- Rodapé da Sidebar: Sessão Ativa & Logout -->
       <div class="p-4 border-t border-white/10 bg-[#001F29] space-y-3">
-        <div class="flex items-center gap-3 px-2">
-          <div class="w-9 h-9 rounded-full bg-[#D96826]/20 border border-[#D96826]/50 flex items-center justify-center text-[#F28C28] font-bold text-sm shrink-0">
+        <NuxtLink
+          to="/dashboard/perfil"
+          class="flex items-center gap-3 px-2 py-1.5 rounded-xl hover:bg-white/5 transition group cursor-pointer"
+        >
+          <div class="w-9 h-9 rounded-full bg-[#D96826]/20 border border-[#D96826]/50 flex items-center justify-center text-[#F28C28] font-bold text-sm shrink-0 group-hover:scale-105 transition-transform">
             {{ user?.email ? user.email.charAt(0).toUpperCase() : 'L' }}
           </div>
           <div class="min-w-0 flex-1">
             <div class="flex items-center gap-1.5">
-              <p class="text-xs font-semibold text-white truncate">
+              <p class="text-xs font-semibold text-white group-hover:text-[#F28C28] transition-colors truncate">
                 {{ userProfile?.full_name || user?.user_metadata?.full_name || 'LIT Capital User' }}
               </p>
               <span
                 v-if="userProfile?.role"
-                class="px-1.5 py-0.5 rounded bg-[#D96826]/20 text-[#F28C28] font-mono text-[9px] font-bold uppercase shrink-0"
+                class="px-1.5 py-0.5 rounded-full bg-[#D96826]/20 border border-[#D96826]/30 text-[#F28C28] text-[9px] font-bold shrink-0"
               >
-                {{ userProfile.role }}
+                {{ formatRoleBadge(userProfile.role) }}
               </span>
             </div>
             <p class="text-[11px] text-slate-400 truncate">
               {{ user?.email || 'Sessão autenticada' }}
             </p>
           </div>
-        </div>
+        </NuxtLink>
 
         <button
           type="button"
