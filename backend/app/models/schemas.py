@@ -123,3 +123,66 @@ class PropertyEnterpriseSchema(BaseModel):
     status_juridico: str = "regular"
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+
+
+# ========================================================================================
+# Vertical 03 - Cartório & Integração ONR/SAEC
+# Alinhado com a migration 20261110194000_cartorio_orders_storage.sql
+# ========================================================================================
+
+
+class CartorioOrderStatusEnum(str, Enum):
+    solicitado = "solicitado"
+    processando = "processando"
+    concluido = "concluido"
+    erro = "erro"
+
+
+class SolicitacaoMatriculaRequest(BaseModel):
+    """Payload enviado pelo Nuxt ao solicitar uma matrícula/certidão."""
+
+    matricula: str = Field(..., min_length=1, max_length=100, description="Número da matrícula do imóvel")
+    rgi: str = Field(..., min_length=1, max_length=255, description="Serventia / Registro de Imóveis de destino")
+    cartorio_cns: Optional[str] = Field(default=None, max_length=50, description="Código Nacional de Serventia")
+    tipo_certidao: str = Field(default="matricula_inteiro_teor", max_length=100)
+    property_id: Optional[UUID] = None
+
+
+class SolicitacaoMatriculaResponse(BaseModel):
+    order_id: UUID
+    transaction_id: UUID
+    status: CartorioOrderStatusEnum
+    protocolo_onr: Optional[str] = None
+
+
+class ONRSolicitacaoResult(BaseModel):
+    """Resposta normalizada do ONR/SAEC ao receber o pedido."""
+
+    protocolo: str
+    status: str
+    mock: bool = False
+
+
+class ONRWebhookStatusEnum(str, Enum):
+    concluido = "CONCLUIDO"
+    erro = "ERRO"
+
+
+class ONRWebhookPayload(BaseModel):
+    """
+    Retorno assíncrono do cartório via ONR/SAEC.
+    Contrato provisório: ajustar aos nomes oficiais na homologação com o ONR.
+    """
+
+    transaction_id: UUID
+    protocolo: Optional[str] = None
+    status: ONRWebhookStatusEnum
+    pdf_url: Optional[str] = None
+    mensagem: Optional[str] = None
+
+
+class ONRWebhookAck(BaseModel):
+    received: bool = True
+    order_id: UUID
+    status: CartorioOrderStatusEnum
+    documento_path: Optional[str] = None
