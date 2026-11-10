@@ -4,6 +4,8 @@ import {
   Sprout,
   Scale,
   Landmark,
+  FileText,
+  Shield,
   CheckCircle2,
   UserCheck,
   ArrowRight,
@@ -93,31 +95,59 @@ const serviceVerticals = [
     ]
   },
   {
-    title: 'Serviços de Cartório & Jurídico',
-    subtitle: 'RGI, Matrículas & Due Diligence',
+    title: 'Serviços de Cartório & ONR',
+    subtitle: 'Emissão de Matrículas & Certidões Vintenárias',
     description:
-      'Conferência registral automatizada de matrículas, certidões negativas de ônus reais e governança documental com compliance LIT Capital.',
-    icon: Scale,
+      'Busca eletrônica direta com o Operador Nacional do Registro de Imóveis, certidões vintenárias e desburocratização notarial.',
+    icon: FileText,
     tag: 'Vertical 03',
-    to: '/dashboard/juridico',
+    to: '/dashboard/cartorio',
     ctaText: 'Consultar Matrículas',
     metrics: [
-      { label: '8 Matrículas Auditadas' },
-      { label: '100% RGI Válido' }
+      { label: '142 Matrículas Emitidas' },
+      { label: '100% Integração ONR' }
     ]
   },
   {
-    title: 'Viabilidade & Financiamento',
-    subtitle: 'Estruturação de Crédito & Capital (LIT Capital)',
+    title: 'Jurídico & Compliance (Due Diligence)',
+    subtitle: 'Auditoria Forense & Blindagem Contratual',
     description:
-      'Simulação de funding imobiliário e agro, crédito com garantia real (Home Equity) e conexão direta com mesas de originação de capital.',
-    icon: Landmark,
+      'Due Diligence imobiliária 360º, Matriz de Risco LIT Score, certidões forenses e minutas contratuais blindadas contra evicção.',
+    icon: Scale,
     tag: 'Vertical 04',
+    to: '/dashboard/juridico',
+    ctaText: 'Acessar Due Diligence',
+    metrics: [
+      { label: 'Score Médio 98/100' },
+      { label: 'Compliance PLD/CFT' }
+    ]
+  },
+  {
+    title: 'Funding, Crédito & Financiamento',
+    subtitle: 'Home Equity & Estruturação de Capital',
+    description:
+      'Simulador multibancos em tempo real, crédito com garantia de imóvel a partir de 0,99% a.m. e antecipação de recebíveis.',
+    icon: Landmark,
+    tag: 'Vertical 05',
     to: '/dashboard/credito',
     ctaText: 'Simular Funding',
     metrics: [
       { label: 'R$ 15M em Análise' },
       { label: 'A partir de 0,99% a.m.' }
+    ]
+  },
+  {
+    title: 'Segurança, Garantias & Avaliações',
+    subtitle: 'Fiança sem Fiador & Laudos NBR 14.653',
+    description:
+      'Apólices corporativas SUSEP, seguro garantia de término de obra, fiança locatícia digital e laudos de avaliação patrimonial.',
+    icon: Shield,
+    tag: 'Vertical 06',
+    to: '/dashboard/garantias',
+    ctaText: 'Cotar Garantias',
+    metrics: [
+      { label: '47 Apólices Ativas' },
+      { label: 'R$ 84M Avaliados' }
     ]
   }
 ]
@@ -191,20 +221,20 @@ const serviceVerticals = [
       </div>
     </section>
 
-    <!-- Grid das 4 Verticais Operacionais da LIT Capital -->
+    <!-- Grid das 6 Verticais Operacionais da LIT Capital -->
     <section class="space-y-4">
       <div class="flex items-center justify-between">
         <div>
           <h3 class="text-lg font-bold text-white">
-            Verticais Operacionais Multi-Serviços
+            6 Verticais Operacionais Multi-Serviços
           </h3>
           <p class="text-xs text-slate-400">
-            Ativos curados e esteiras operacionais disponíveis para originação e investimento
+            Ativos curados, esteiras operacionais nativas e marketplace B2B homologado pela LIT Capital
           </p>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         <div
           v-for="vertical in serviceVerticals"
           :key="vertical.title"

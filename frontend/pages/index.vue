@@ -219,87 +219,31 @@ function resetFilters() {
 
 <template>
   <div class="min-h-screen bg-[#F4F7F9] text-slate-900 flex flex-col">
-    <!-- 1. Navbar Institucional Fixa no Topo (marca ImobiLit by LIT Capital) -->
-    <header
-      :class="[
-        'sticky top-0 z-40 bg-gradient-to-b from-[#003040] to-[#002936] transition-all duration-200',
-        isScrolled ? 'shadow-[0_8px_24px_-12px_rgba(0,0,0,0.55)] backdrop-blur-md' : ''
-      ]"
-    >
-      <!-- Fio institucional laranja -->
-      <div class="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-[#D96826] via-[#F28C28] to-[#D96826]" />
-      <div class="absolute inset-x-0 bottom-0 h-px bg-white/[0.08]" />
+    <!-- 1. Header Institucional com Mega Menu das 6 Verticais & Ações de Conversão -->
+    <AppHeader />
 
-      <div
-        :class="[
-          'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-4 transition-all duration-200',
-          isScrolled ? 'h-14' : 'h-16'
-        ]"
-      >
-        <!-- Esquerda: marca -->
-        <BrandLockup />
-
-        <!-- Centro: busca (vidro escuro, foco laranja, atalho "/") -->
-        <div class="flex-1 min-w-0 max-w-lg mx-auto hidden sm:block">
+    <!-- Conteúdo Principal da Vitrine Pública -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <!-- 2. Barra de Busca Rápida + Filtros Superiores + Chips -->
+      <section class="space-y-4">
+        <!-- Campo de Busca em Destaque na Vitrine (Atalho '/') -->
+        <div class="relative max-w-3xl mx-auto">
           <label class="relative block">
-            <span class="sr-only">Buscar imóveis</span>
-            <Search class="w-4 h-4 text-slate-300/80 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <span class="sr-only">Buscar ativos homologados</span>
+            <Search class="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               ref="searchInput"
               v-model="searchQuery"
               type="text"
-              placeholder="Buscar bairro, rua, condomínio ou fazenda…"
-              class="w-full rounded-full pl-11 pr-14 py-2.5 text-sm text-white placeholder-slate-300/70 bg-white/[0.07] hover:bg-white/10 border border-white/[0.12] focus:outline-none focus:bg-white/[0.12] focus:border-[#F28C28] focus:ring-[3px] focus:ring-[#F28C28]/25 transition"
+              placeholder="Buscar por bairro, rua, condomínio, cidade ou fazenda…"
+              class="w-full rounded-2xl pl-12 pr-14 py-3.5 text-sm text-[#002936] placeholder-slate-400 bg-white border border-slate-200 shadow-sm focus:outline-none focus:border-[#D96826] focus:ring-4 focus:ring-[#D96826]/15 transition font-medium"
             />
             <kbd
-              class="hidden lg:block absolute right-3 top-1/2 -translate-y-1/2 text-xs rounded-md px-1.5 py-0.5 text-slate-300/70 border border-white/[0.14]"
+              class="hidden sm:block absolute right-4 top-1/2 -translate-y-1/2 text-xs font-mono font-semibold rounded-md px-2 py-1 text-slate-400 bg-slate-100 border border-slate-200"
             >/</kbd>
           </label>
         </div>
 
-        <!-- Direita: ações -->
-        <div class="flex items-center gap-2 shrink-0 ml-auto sm:ml-0">
-          <button
-            type="button"
-            class="sm:hidden w-10 h-10 rounded-full flex items-center justify-center text-slate-200 hover:text-white hover:bg-white/[0.07] transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-            aria-label="Buscar"
-            @click="searchInput?.focus()"
-          >
-            <Search class="w-[18px] h-[18px]" />
-          </button>
-
-          <NuxtLink
-            to="/cadastro"
-            class="hidden lg:inline-flex rounded-full px-4 py-2 text-sm font-semibold text-slate-200/85 hover:text-white hover:bg-white/[0.07] transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-          >
-            Anunciar ativo
-          </NuxtLink>
-
-          <NuxtLink
-            v-if="user"
-            to="/dashboard"
-            class="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-full bg-gradient-to-b from-[#E7762D] to-[#D96826] text-white text-sm font-bold shadow-[0_6px_16px_-6px_rgba(217,104,38,0.8),inset_0_1px_0_rgba(255,255,255,0.25)] hover:brightness-110 hover:-translate-y-px transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-          >
-            <ShieldCheck class="w-4 h-4" />
-            <span>Meu Painel</span>
-          </NuxtLink>
-
-          <NuxtLink
-            v-else
-            to="/login"
-            class="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-full bg-gradient-to-b from-[#E7762D] to-[#D96826] text-white text-sm font-bold shadow-[0_6px_16px_-6px_rgba(217,104,38,0.8),inset_0_1px_0_rgba(255,255,255,0.25)] hover:brightness-110 hover:-translate-y-px transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-          >
-            <Lock class="w-[15px] h-[15px]" />
-            <span>Acessar <span class="hidden sm:inline">Portal</span></span>
-          </NuxtLink>
-        </div>
-      </div>
-    </header>
-
-    <!-- Conteúdo Principal da Vitrine -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-      <!-- 2. Barra de Filtros Superior + Chips -->
-      <section class="space-y-4">
         <!-- Linha 1: Seletor de Cidade + Contador "Exibindo X ativos" + Botão "Limpar filtros" -->
         <div class="flex flex-wrap items-center justify-between gap-4">
           <div class="flex flex-wrap items-center gap-3">

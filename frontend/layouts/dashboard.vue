@@ -10,6 +10,8 @@ import {
   Sprout,
   Scale,
   Landmark,
+  FileText,
+  Shield,
   ShieldCheck,
   Users,
   ClipboardCheck,
@@ -121,7 +123,7 @@ const menuGroups = [
   },
   {
     id: 'servicos',
-    title: 'Serviços LIT Capital',
+    title: 'Serviços LIT Capital (6 Verticais)',
     items: [
       {
         id: 'urbanos',
@@ -131,21 +133,33 @@ const menuGroups = [
       },
       {
         id: 'rurais',
-        label: 'Ativos Rurais (Agro)',
+        label: 'Ativos Rurais & Agro',
         to: '/dashboard/rurais',
         icon: Sprout
       },
       {
+        id: 'cartorio',
+        label: 'Cartório',
+        to: '/dashboard/cartorio',
+        icon: FileText
+      },
+      {
         id: 'juridico',
-        label: 'Cartório & Jurídico',
+        label: 'Jurídico & Compliance',
         to: '/dashboard/juridico',
         icon: Scale
       },
       {
         id: 'credito',
-        label: 'Crédito & Funding',
+        label: 'Funding & Crédito',
         to: '/dashboard/credito',
         icon: Landmark
+      },
+      {
+        id: 'garantias',
+        label: 'Segurança & Garantias',
+        to: '/dashboard/garantias',
+        icon: Shield
       }
     ]
   }
