@@ -108,7 +108,7 @@ async function handleOAuthLogin(provider: 'google' | 'linkedin_oidc') {
 
   try {
     const redirectTo =
-      typeof window !== 'undefined' ? `${window.location.origin}/dashboard` : undefined
+      typeof window !== 'undefined' ? `${window.location.origin}/confirm` : undefined
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider,

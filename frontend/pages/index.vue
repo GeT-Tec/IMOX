@@ -8,6 +8,10 @@ import {
 } from 'lucide-vue-next'
 import type { PropertyCardItem } from '~/components/PropertyCard.vue'
 
+definePageMeta({
+  middleware: ['auth']
+})
+
 const user = useSupabaseUser()
 
 const searchQuery = ref('')
