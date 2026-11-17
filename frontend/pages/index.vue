@@ -73,7 +73,27 @@ const mockProperties = ref<PropertyCardItem[]>([
     bathrooms: 2,
     parking: 3,
     imageUrl:
-      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=900&q=80'
+      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=900&q=80',
+    lit_certified: true,
+    show_market_price: true,
+    regional_avg_price: 9600,
+    public_documents: [
+      {
+        id: 'doc-01-mat',
+        title: 'Matrícula Atualizada (RGI)',
+        category: 'matricula',
+        documentUrl: 'https://example.com/imobilit-01-matricula.pdf',
+        issuedBy: '2º Ofício de Registro de Imóveis de Vitória',
+        verifiedAt: '2026-11-12'
+      },
+      {
+        id: 'doc-01-onus',
+        title: 'Certidão Negativa de Ônus Reais',
+        category: 'certidao',
+        documentUrl: 'https://example.com/imobilit-01-onus.pdf',
+        issuedBy: 'ONR / SAEC'
+      }
+    ]
   },
   {
     id: 'imobilit-02',
@@ -89,7 +109,11 @@ const mockProperties = ref<PropertyCardItem[]>([
     bathrooms: 3,
     parking: 3,
     imageUrl:
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80'
+      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80',
+    lit_certified: false,
+    show_market_price: true,
+    regional_avg_price: 14500,
+    public_documents: []
   },
   {
     id: 'imobilit-03',
@@ -105,7 +129,27 @@ const mockProperties = ref<PropertyCardItem[]>([
     bathrooms: 4,
     parking: 2,
     imageUrl:
-      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=80'
+      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=80',
+    lit_certified: true,
+    show_market_price: true,
+    regional_avg_price: 15800,
+    public_documents: [
+      {
+        id: 'doc-03-mat',
+        title: 'Matrícula Inteiro Teor #48.920',
+        category: 'matricula',
+        documentUrl: 'https://example.com/imobilit-03-matricula.pdf',
+        issuedBy: '1º Ofício de Registro de Imóveis de Vitória',
+        verifiedAt: '2026-11-10'
+      },
+      {
+        id: 'doc-03-iptu',
+        title: 'CND de Débitos Municipais (IPTU)',
+        category: 'iptu',
+        documentUrl: '',
+        issuedBy: 'Prefeitura Municipal de Vitória'
+      }
+    ]
   },
   {
     id: 'imobilit-04',
@@ -122,7 +166,27 @@ const mockProperties = ref<PropertyCardItem[]>([
     bathrooms: 7,
     parking: 8,
     imageUrl:
-      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=900&q=80'
+      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=900&q=80',
+    lit_certified: true,
+    show_market_price: true,
+    regional_avg_price: 9,
+    public_documents: [
+      {
+        id: 'doc-04-car',
+        title: 'Recibo CAR & Reserva Legal',
+        category: 'car',
+        documentUrl: 'https://example.com/imobilit-04-car.pdf',
+        issuedBy: 'SICAR / IDAF-ES',
+        verifiedAt: '2026-11-08'
+      },
+      {
+        id: 'doc-04-mat',
+        title: 'Certidão de Cadeia Dominial',
+        category: 'certidao',
+        documentUrl: 'https://example.com/imobilit-04-dominial.pdf',
+        issuedBy: 'Cartório de Domingos Martins'
+      }
+    ]
   },
   {
     id: 'imobilit-05',
@@ -138,7 +202,20 @@ const mockProperties = ref<PropertyCardItem[]>([
     bathrooms: 5,
     parking: 4,
     imageUrl:
-      'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=900&q=80'
+      'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=900&q=80',
+    lit_certified: true,
+    show_market_price: true,
+    regional_avg_price: 18200,
+    public_documents: [
+      {
+        id: 'doc-05-ri',
+        title: 'Registro de Incorporação (RI)',
+        category: 'matricula',
+        documentUrl: 'https://example.com/imobilit-05-ri.pdf',
+        issuedBy: '1º Cartório de Vila Velha',
+        verifiedAt: '2026-11-14'
+      }
+    ]
   },
   {
     id: 'imobilit-06',
@@ -155,7 +232,11 @@ const mockProperties = ref<PropertyCardItem[]>([
     bathrooms: 5,
     parking: 10,
     imageUrl:
-      'https://images.unsplash.com/photo-1500076656116-558758c991c1?auto=format&fit=crop&w=900&q=80'
+      'https://images.unsplash.com/photo-1500076656116-558758c991c1?auto=format&fit=crop&w=900&q=80',
+    lit_certified: false,
+    show_market_price: false,
+    regional_avg_price: null,
+    public_documents: []
   },
   {
     id: 'imobilit-07',
@@ -171,7 +252,11 @@ const mockProperties = ref<PropertyCardItem[]>([
     bathrooms: 4,
     parking: 3,
     imageUrl:
-      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=900&q=80'
+      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=900&q=80',
+    lit_certified: false,
+    show_market_price: true,
+    regional_avg_price: 9800,
+    public_documents: []
   },
   {
     id: 'imobilit-08',
@@ -187,7 +272,11 @@ const mockProperties = ref<PropertyCardItem[]>([
     bathrooms: 3,
     parking: 2,
     imageUrl:
-      'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=900&q=80'
+      'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=900&q=80',
+    lit_certified: false,
+    show_market_price: false,
+    regional_avg_price: 10500,
+    public_documents: []
   }
 ])
 
