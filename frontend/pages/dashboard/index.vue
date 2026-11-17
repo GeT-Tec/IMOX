@@ -11,7 +11,8 @@ import {
   ArrowRight,
   TrendingUp,
   ShieldCheck,
-  Sparkles
+  Sparkles,
+  Briefcase
 } from 'lucide-vue-next'
 
 definePageMeta({
@@ -50,6 +51,18 @@ const formatRole = (role?: string) => {
 const userInitials = computed(() => {
   const name = profile.value?.full_name || user.value?.user_metadata?.full_name || user.value?.email || 'U'
   return name.trim().charAt(0).toUpperCase()
+})
+
+const isSocialUser = computed(() => {
+  const appMeta = user.value?.app_metadata as Record<string, any> | undefined
+  const provider = appMeta?.provider
+  const providers = (appMeta?.providers as string[]) || []
+  return (
+    provider === 'google' ||
+    provider === 'linkedin_oidc' ||
+    providers.includes('google') ||
+    providers.includes('linkedin_oidc')
+  )
 })
 
 onMounted(async () => {
@@ -218,6 +231,48 @@ const serviceVerticals = [
             </span>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- Banner de Upgrade para Conta Parceiro (Usuários Sociais / Role Customer) -->
+    <section
+      v-if="profile?.role === 'customer'"
+      class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#00384A]/90 via-[#0D2230] to-[#002B3A] border border-[#F28C28]/40 p-5 sm:p-6 shadow-xl"
+    >
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-5">
+        <div class="flex items-start gap-3.5">
+          <div class="w-10 h-10 rounded-xl bg-[#D96826]/20 border border-[#D96826]/40 flex items-center justify-center text-[#F28C28] shrink-0 mt-0.5">
+            <Briefcase class="w-5 h-5" />
+          </div>
+          <div class="space-y-1">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="text-xs font-bold uppercase tracking-wider text-[#F28C28]">
+                Perfil: Investidor / PF
+              </span>
+              <span
+                v-if="isSocialUser"
+                class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/10 text-slate-300"
+              >
+                Autenticado via Rede Social (Google / LinkedIn)
+              </span>
+            </div>
+            <h3 class="text-base sm:text-lg font-bold text-white">
+              Deseja atuar como Corretor Credenciado ou Parceiro B2B?
+            </h3>
+            <p class="text-xs text-slate-300 max-w-2xl leading-relaxed">
+              Usuários cadastrados via login social iniciam com o perfil de cliente. Faça o upgrade de credenciamento para informar seu CRECI ou CNPJ e desbloquear a originação de ativos, esteira de cartório e comissionamento.
+            </p>
+          </div>
+        </div>
+
+        <NuxtLink
+          to="/dashboard/perfil?upgrade=true"
+          class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-[#D96826] to-[#F28C28] hover:from-[#c35a1d] hover:to-[#e07b1d] text-white text-xs sm:text-sm font-bold shadow-lg shadow-[#D96826]/25 transition shrink-0 cursor-pointer"
+        >
+          <UserCheck class="w-4 h-4" />
+          <span>Upgrade para Conta Parceiro</span>
+          <ArrowRight class="w-4 h-4" />
+        </NuxtLink>
       </div>
     </section>
 

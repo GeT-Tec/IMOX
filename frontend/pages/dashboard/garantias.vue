@@ -70,10 +70,10 @@ const recentGarantias = [
         </p>
       </div>
 
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-3 w-full sm:w-auto">
         <button
           type="button"
-          class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#D96826] to-[#F28C28] text-white text-xs sm:text-sm font-bold shadow-md shadow-[#D96826]/20 hover:brightness-110 transition cursor-pointer"
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#D96826] to-[#F28C28] text-white text-xs sm:text-sm font-bold shadow-md shadow-[#D96826]/20 hover:brightness-110 transition cursor-pointer"
         >
           <ShieldCheck class="w-4 h-4" />
           <span>Cotar Garantia / Laudo</span>
@@ -152,9 +152,7 @@ const recentGarantias = [
                 {{ item.cobertura }}
               </td>
               <td class="py-3.5 px-4 text-right">
-                <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
-                  {{ item.status }}
-                </span>
+                <StatusBadge :status="item.status" />
               </td>
             </tr>
           </tbody>

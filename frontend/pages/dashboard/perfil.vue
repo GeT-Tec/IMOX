@@ -25,12 +25,31 @@ definePageMeta({
 })
 
 const user = useSupabaseUser()
-const supabase = useSupabaseClient()
+const supabase = useSupabaseClient<any>()
+const route = useRoute()
+
+interface UserProfileRow {
+  role: string | null
+  full_name: string | null
+  company_name: string | null
+}
 
 type SimulationRole = 'customer' | 'broker' | 'b2b_partner'
 
 // Seletor de Simulação para a Vitrine Viva (PoC)
 const simulatedRole = ref<SimulationRole>('customer')
+
+const isUpgradeRequested = computed(() => route.query.upgrade === 'true')
+
+const isSocialUser = computed(() => {
+  const appMeta = user.value?.app_metadata as Record<string, any> | undefined
+  const provider = appMeta?.provider
+  const providers = (appMeta?.providers as string[]) || []
+  return (
+    provider === 'google' ||
+    providers.includes('google')
+  )
+})
 
 // 1. Dados Comuns
 const avatarUrl = ref<string>('https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80')
@@ -68,7 +87,7 @@ onMounted(async () => {
     .from('user_profiles')
     .select('role, full_name, company_name')
     .eq('id', user.value.id)
-    .maybeSingle()
+    .maybeSingle<UserProfileRow>()
 
   if (data) {
     if (data.full_name) fullName.value = data.full_name
@@ -79,6 +98,11 @@ onMounted(async () => {
     if (data.role === 'broker' || data.role === 'b2b_partner' || data.role === 'customer') {
       simulatedRole.value = data.role as SimulationRole
     }
+  }
+
+  // Se o usuário veio pelo fluxo de Upgrade de Conta Parceiro
+  if (route.query.upgrade === 'true' && simulatedRole.value === 'customer') {
+    simulatedRole.value = 'broker'
   }
 })
 
@@ -138,6 +162,27 @@ async function handleSaveProfile() {
       <p class="text-xs sm:text-sm text-slate-400">
         Preencha os dados cadastrais e documentação necessária para ativação da sua esteira na LIT Capital.
       </p>
+    </div>
+
+    <!-- Alerta Informativo de Upgrade de Conta (Login Social / Customer) -->
+    <div
+      v-if="isUpgradeRequested || (isSocialUser && simulatedRole === 'customer')"
+      class="rounded-2xl bg-gradient-to-r from-[#D96826]/20 via-[#002B3A] to-[#00384A] border border-[#F28C28]/50 p-5 shadow-lg flex items-start gap-4"
+    >
+      <div class="w-10 h-10 rounded-xl bg-[#D96826]/30 border border-[#D96826]/60 flex items-center justify-center text-[#F28C28] shrink-0 mt-0.5">
+        <ShieldCheck class="w-5 h-5" />
+      </div>
+      <div class="space-y-1">
+        <h3 class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+          <span>Upgrade para Conta Parceiro Credenciado</span>
+          <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#D96826]/30 text-[#F28C28]">
+            Habilitação de Negócios
+          </span>
+        </h3>
+        <p class="text-xs text-slate-300 leading-relaxed">
+          Usuários autenticados via Google ou LinkedIn iniciam como Investidor/PF. Selecione abaixo <strong class="text-white">Corretor</strong> (para informar seu número de registro CRECI) ou <strong class="text-white">Parceiro B2B</strong> (para informar CNPJ e Razão Social) e salve as alterações para concluir o credenciamento de parceiro.
+        </p>
+      </div>
     </div>
 
     <!-- Seletor de Simulação de Perfil (Vitrine Viva / Apresentação PoC) -->
@@ -571,12 +616,12 @@ async function handleSaveProfile() {
         <span>Perfil e dados de onboarding salvos com sucesso no ecossistema LIT Capital!</span>
       </div>
 
-      <!-- Botão de Ação CTA -->
-      <div class="flex items-center justify-end gap-4 pt-2">
+      <!-- Botão de Ação CTA Responsivo com Autoadaptação -->
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-4 pt-2">
         <button
           type="submit"
           :disabled="saving"
-          class="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#D96826] to-[#F28C28] hover:from-[#c35a1d] hover:to-[#e07b1d] disabled:opacity-60 text-white font-bold text-sm shadow-lg shadow-[#D96826]/25 transition cursor-pointer"
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#D96826] to-[#F28C28] hover:from-[#c35a1d] hover:to-[#e07b1d] disabled:opacity-60 text-white font-bold text-sm shadow-lg shadow-[#D96826]/25 transition cursor-pointer active:scale-98"
         >
           <Save v-if="!saving" class="w-4 h-4" />
           <span v-if="!saving">Salvar Perfil e Concluir Onboarding</span>

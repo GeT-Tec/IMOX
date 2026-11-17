@@ -174,13 +174,13 @@ onMounted(() => {
         </p>
       </div>
 
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-3 w-full sm:w-auto">
         <button
           type="button"
           :disabled="loading"
           @click="fetchOrders"
           title="Atualizar Esteira"
-          class="p-2.5 rounded-xl bg-[#0D2230] border border-white/10 hover:border-white/20 text-slate-300 hover:text-white transition cursor-pointer"
+          class="p-2.5 rounded-xl bg-[#0D2230] border border-white/10 hover:border-white/20 text-slate-300 hover:text-white transition cursor-pointer shrink-0"
         >
           <RefreshCw :class="['w-4 h-4', loading ? 'animate-spin' : '']" />
         </button>
@@ -189,7 +189,7 @@ onMounted(() => {
           type="button"
           :disabled="submitting"
           @click="solicitarMatricula"
-          class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#D96826] to-[#F28C28] text-white text-xs sm:text-sm font-bold shadow-md shadow-[#D96826]/20 hover:brightness-110 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#D96826] to-[#F28C28] text-white text-xs sm:text-sm font-bold shadow-md shadow-[#D96826]/20 hover:brightness-110 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Loader2 v-if="submitting" class="w-4 h-4 animate-spin" />
           <FileText v-else class="w-4 h-4" />
@@ -312,21 +312,11 @@ onMounted(() => {
                 {{ formatDate(item.requested_at || item.created_at) }}
               </td>
               <td class="py-3.5 px-4">
-                <span
-                  :class="[
-                    'px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider inline-flex items-center gap-1.5',
-                    item.status === 'concluido'
-                      ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
-                      : item.status === 'erro'
-                        ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30'
-                        : 'bg-[#D96826]/15 text-[#F28C28] border border-[#D96826]/30'
-                  ]"
-                >
-                  <CheckCircle2 v-if="item.status === 'concluido'" class="w-3 h-3" />
-                  <AlertCircle v-else-if="item.status === 'erro'" class="w-3 h-3" />
-                  <Clock v-else class="w-3 h-3 animate-pulse" />
-                  {{ item.status }}
-                </span>
+                <StatusBadge
+                  :status="item.status === 'concluido' ? 'approved' : item.status === 'erro' ? 'rejected' : 'pending'"
+                  :label="item.status"
+                  :pulse="item.status === 'processando'"
+                />
               </td>
               <td class="py-3.5 px-4 text-right">
                 <button

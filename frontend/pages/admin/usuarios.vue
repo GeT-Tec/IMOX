@@ -14,7 +14,7 @@ definePageMeta({
   middleware: ['auth']
 })
 
-const supabase = useSupabaseClient()
+const supabase = useSupabaseClient<any>()
 
 type UserRole = 'admin' | 'b2b_partner' | 'broker' | 'customer'
 
@@ -221,16 +221,10 @@ onMounted(() => {
               </td>
 
               <td class="py-4 px-6">
-                <span
-                  :class="[
-                    'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold',
-                    u.role === 'admin'
-                      ? 'bg-[#D96826]/20 text-[#F28C28] border border-[#D96826]/40'
-                      : 'bg-white/[0.06] text-slate-200 border border-white/10'
-                  ]"
-                >
-                  {{ formatRoleName(u.role) }}
-                </span>
+                <StatusBadge
+                  :status="u.role === 'admin' ? 'corporate' : 'neutral'"
+                  :label="formatRoleName(u.role)"
+                />
               </td>
 
               <td class="py-4 px-6">

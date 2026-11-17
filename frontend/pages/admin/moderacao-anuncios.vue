@@ -13,7 +13,7 @@ definePageMeta({
   middleware: ['auth']
 })
 
-const supabase = useSupabaseClient()
+const supabase = useSupabaseClient<any>()
 
 interface PropertyModerationItem {
   id: string
@@ -28,9 +28,11 @@ interface PropertyModerationItem {
   numero_car: string | null
 }
 
+type ModerationFilter = 'all' | 'pending' | 'approved' | 'rejected'
+
 const propertiesList = ref<PropertyModerationItem[]>([])
 const loading = ref(false)
-const filterStatus = ref<'all' | 'pending' | 'approved' | 'rejected'>('all')
+const filterStatus = ref<ModerationFilter>('all')
 
 async function fetchModerationQueue() {
   loading.value = true
@@ -96,22 +98,22 @@ onMounted(() => {
       </button>
     </section>
 
-    <!-- Filtros de Status -->
+    <!-- Filtros de Status Responsivos -->
     <div class="flex flex-wrap gap-2">
       <button
-        v-for="tab in [
+        v-for="tab in ([
           { id: 'all', label: 'Todos os Registros' },
           { id: 'pending', label: 'Pendentes de Revisão' },
           { id: 'approved', label: 'Aprovados' },
           { id: 'rejected', label: 'Rejeitados' }
-        ]"
+        ] as const)"
         :key="tab.id"
         type="button"
-        @click="filterStatus = tab.id as any"
+        @click="filterStatus = tab.id"
         :class="[
           'px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer',
           filterStatus === tab.id
-            ? 'bg-[#D96826] text-white'
+            ? 'bg-[#D96826] text-white shadow-sm'
             : 'bg-[#0D2230] text-slate-300 border border-white/10 hover:border-white/25'
         ]"
       >
@@ -141,18 +143,7 @@ onMounted(() => {
       >
         <div class="space-y-1.5">
           <div class="flex items-center gap-2">
-            <span
-              :class="[
-                'px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase',
-                item.approval_status === 'approved'
-                  ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
-                  : item.approval_status === 'rejected'
-                  ? 'bg-red-500/15 text-red-300 border border-red-500/30'
-                  : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
-              ]"
-            >
-              {{ item.approval_status === 'approved' ? 'Aprovado' : item.approval_status === 'rejected' ? 'Rejeitado' : 'Pendente de Revisão' }}
-            </span>
+            <StatusBadge :status="item.approval_status" />
             <span class="text-xs text-slate-400 font-mono">
               {{ item.property_type }} • {{ item.city }}/{{ item.state }}
             </span>
@@ -164,11 +155,11 @@ onMounted(() => {
           </p>
         </div>
 
-        <div class="flex items-center gap-2 shrink-0">
+        <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-white/5">
           <button
             type="button"
             @click="updateStatus(item.id, 'approved')"
-            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition cursor-pointer"
+            class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 sm:py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition cursor-pointer shadow-sm active:scale-95"
           >
             <CheckCircle2 class="w-4 h-4" />
             <span>Aprovar</span>
@@ -177,7 +168,7 @@ onMounted(() => {
           <button
             type="button"
             @click="updateStatus(item.id, 'pending')"
-            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-600/80 hover:bg-amber-600 text-white text-xs font-semibold transition cursor-pointer"
+            class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 sm:py-2 rounded-xl bg-amber-600/80 hover:bg-amber-600 text-white text-xs font-semibold transition cursor-pointer shadow-sm active:scale-95"
           >
             <Clock class="w-4 h-4" />
             <span>Pendente</span>
@@ -186,7 +177,7 @@ onMounted(() => {
           <button
             type="button"
             @click="updateStatus(item.id, 'rejected')"
-            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-red-600/80 hover:bg-red-600 text-white text-xs font-semibold transition cursor-pointer"
+            class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 sm:py-2 rounded-xl bg-red-600/80 hover:bg-red-600 text-white text-xs font-semibold transition cursor-pointer shadow-sm active:scale-95"
           >
             <XCircle class="w-4 h-4" />
             <span>Rejeitar</span>

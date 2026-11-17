@@ -138,10 +138,7 @@ const ruralProperties = [
                   {{ item.vocation }}
                 </td>
                 <td class="py-4 px-6">
-                  <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
-                    <ShieldCheck class="w-3.5 h-3.5" />
-                    {{ item.carStatus }}
-                  </span>
+                  <StatusBadge status="approved" :label="item.carStatus" />
                 </td>
                 <td class="py-4 px-6 text-right font-bold text-[#F28C28]">
                   {{ item.price }}

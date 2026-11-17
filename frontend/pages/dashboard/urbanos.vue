@@ -152,10 +152,7 @@ const urbanProperties = [
                   {{ item.price }}
                 </td>
                 <td class="py-4 px-6">
-                  <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
-                    <CheckCircle2 class="w-3.5 h-3.5" />
-                    {{ item.status }}
-                  </span>
+                  <StatusBadge status="approved" :label="item.status" />
                 </td>
                 <td class="py-4 px-6 text-right">
                   <NuxtLink

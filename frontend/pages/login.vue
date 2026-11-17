@@ -11,7 +11,7 @@ const supabase = useSupabaseClient()
 const email = ref('')
 const password = ref('')
 const loading = ref(false)
-const oauthLoading = ref<'google' | 'linkedin_oidc' | null>(null)
+const oauthLoading = ref(false)
 const errorMessage = ref('')
 
 async function handleLogin() {
@@ -45,9 +45,9 @@ async function handleLogin() {
   }
 }
 
-async function handleOAuthLogin(provider: 'google' | 'linkedin_oidc') {
+async function handleOAuthLogin(provider: 'google') {
   errorMessage.value = ''
-  oauthLoading.value = provider
+  oauthLoading.value = true
 
   try {
     const redirectTo =
@@ -67,7 +67,7 @@ async function handleOAuthLogin(provider: 'google' | 'linkedin_oidc') {
     errorMessage.value =
       err?.message || `Não foi possível iniciar a autenticação social (${provider}).`
   } finally {
-    oauthLoading.value = null
+    oauthLoading.value = false
   }
 }
 </script>
@@ -155,49 +155,33 @@ async function handleOAuthLogin(provider: 'google' | 'linkedin_oidc') {
           <span>{{ errorMessage }}</span>
         </div>
 
-        <!-- Botões de Social Login (Google & LinkedIn OIDC) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <button
-            type="button"
-            :disabled="oauthLoading !== null || loading"
-            @click="handleOAuthLogin('google')"
-            class="flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl bg-[#0D2230] hover:bg-[#132E40] border border-white/15 text-xs sm:text-sm font-semibold text-white transition cursor-pointer disabled:opacity-60"
-          >
-            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-              <path
-                fill="#EA4335"
-                d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"
-              />
-              <path
-                fill="#4285F4"
-                d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"
-              />
-              <path
-                fill="#FBBC05"
-                d="M5.3 14.8c-.2-.8-.4-1.8-.4-2.8s.2-2 .4-2.8L1.6 6.4C.6 8.4 0 10.6 0 12s.6 3.6 1.6 5.6l3.7-2.8z"
-              />
-              <path
-                fill="#34A853"
-                d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5l-3.7 2.8C3.5 19.9 7.4 23 12 23z"
-              />
-            </svg>
-            <span>{{ oauthLoading === 'google' ? 'Conectando...' : 'Entrar com Google' }}</span>
-          </button>
-
-          <button
-            type="button"
-            :disabled="oauthLoading !== null || loading"
-            @click="handleOAuthLogin('linkedin_oidc')"
-            class="flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl bg-[#0D2230] hover:bg-[#132E40] border border-white/15 text-xs sm:text-sm font-semibold text-white transition cursor-pointer disabled:opacity-60"
-          >
-            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="#0A66C2">
-              <path
-                d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"
-              />
-            </svg>
-            <span>{{ oauthLoading === 'linkedin_oidc' ? 'Conectando...' : 'Entrar com LinkedIn' }}</span>
-          </button>
-        </div>
+        <!-- Botão de Social Login (Google OIDC) -->
+        <button
+          type="button"
+          :disabled="oauthLoading || loading"
+          @click="handleOAuthLogin('google')"
+          class="w-full flex items-center justify-center gap-3 py-3.5 px-4 rounded-xl bg-[#0D2230] hover:bg-[#132E40] border border-white/15 hover:border-[#D96826]/40 text-sm font-semibold text-white transition shadow-sm cursor-pointer disabled:opacity-60"
+        >
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+            <path
+              fill="#EA4335"
+              d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"
+            />
+            <path
+              fill="#4285F4"
+              d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"
+            />
+            <path
+              fill="#FBBC05"
+              d="M5.3 14.8c-.2-.8-.4-1.8-.4-2.8s.2-2 .4-2.8L1.6 6.4C.6 8.4 0 10.6 0 12s.6 3.6 1.6 5.6l3.7-2.8z"
+            />
+            <path
+              fill="#34A853"
+              d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5l-3.7 2.8C3.5 19.9 7.4 23 12 23z"
+            />
+          </svg>
+          <span>{{ oauthLoading ? 'Conectando conta Google...' : 'Continuar com Google' }}</span>
+        </button>
 
         <!-- Separador Visual -->
         <div class="relative flex items-center py-1">

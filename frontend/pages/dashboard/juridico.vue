@@ -190,21 +190,10 @@ const dueDiligenceItems = [
 
                 <!-- Status de Compliance -->
                 <td class="py-4 px-5">
-                  <span
-                    :class="[
-                      'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold',
-                      item.statusType === 'success'
-                        ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
-                        : item.statusType === 'warning'
-                          ? 'bg-[#D96826]/15 text-[#F28C28] border border-[#D96826]/30'
-                          : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
-                    ]"
-                  >
-                    <CheckCircle2 v-if="item.statusType === 'success'" class="w-3.5 h-3.5" />
-                    <Clock v-else-if="item.statusType === 'warning'" class="w-3.5 h-3.5" />
-                    <AlertTriangle v-else class="w-3.5 h-3.5" />
-                    {{ item.status }}
-                  </span>
+                  <StatusBadge
+                    :status="item.statusType === 'success' ? 'approved' : item.statusType === 'warning' ? 'pending' : 'corporate'"
+                    :label="item.status"
+                  />
                 </td>
 
                 <!-- Parecer / Ação -->
